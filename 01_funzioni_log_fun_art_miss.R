@@ -1,5 +1,4 @@
 
-
 # SPLIT FUNCTION ----------------------------------------------------------
 
 split <- function(k,rho_n){
@@ -11,7 +10,7 @@ split <- function(k,rho_n){
   if (length(z) != 0 ){
     
     
-  ifelse(length(z) != 1, {j <- sample(z,size = 1)}, {j <- z}) #se sample ha un solo elemento da cui campionare in automatico campiona da 1:elemento, per questo è necessario ifelse
+  ifelse(length(z) != 1, {j <- sample(z,size = 1)}, {j <- z}) # we need to consider the case of a single partition sample
   
     l <- sample(1:(rho_n[j]-1),1)
     
@@ -29,17 +28,13 @@ split <- function(k,rho_n){
       ifelse(j != length(rho_n), {rho_n <- c(l,rho_n[j]-l,rho_n[(j+1):length(rho_n)])},
              {rho_n <- c(l,rho_n[j]-l)})
       
-      
     }
-    
-    
-    
   }
   
   output[[1]] = rho_n
   output[[2]] = j
   
-  output
+  return(output)
   
 }
 
@@ -55,12 +50,10 @@ merge <- function(k,rho_n){
     
     if (c != 2){
     
-
    j <- sample(1:(k-1),1)
   
    u <- runif(1)
   
-      
       ifelse(j != 1, {
         ifelse(j == (length(rho_n) - 1),{rho_n <- c(rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)]))},
                             {rho_n <- c(rho_n[1:(j-1)],rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
@@ -69,35 +62,24 @@ merge <- function(k,rho_n){
                {rho_n <- c(rho_n[j] + rho_n[(j+1)], rho_n[(j+2):length(rho_n)])})
   
       k <- k - 1 
-      
-  
   }
   
-  if (c == 2){
-    
-    j <- 1
-    
-    u <- runif(1)
-    
-    alpha = 0.05 #provvisorio 
-    
-    if (u <= alpha){
+     if (c == 2){
       
-      rho_n <- c(rho_n[j] + rho_n[(j+1)])
+       j <- 1
       
-      k <- length(rho_n) 
-      
-      
-    }
-    
-  }
+       rho_n <- c(rho_n[j] + rho_n[(j+1)])
+        
+       k <- length(rho_n) 
+        
+     }
     
   } 
   
   output[[1]] = rho_n
   output[[2]] = j
   
-  output
+  return(output)
   
 }
 
@@ -108,18 +90,15 @@ shuffle <- function(k,rho_n){
   i <- sample(1:(k-1),1)
   
   j <- sample(1:(rho_n[i] + rho_n[i + 1] - 1),1)
-  
-  u <- runif(1)
     
-    rho_n[i+1] <- (rho_n[i] + rho_n[i+1] - j)
+  rho_n[i+1] <- (rho_n[i] + rho_n[i+1] - j)
     
-    rho_n[i] <- j 
+  rho_n[i] <- j 
   
-  rho_n
-  
+  return(rho_n)
 }
 
-# FUNZIONI VARIE ----------------------------------------------------------
+# VARIOUS FUNCTIONS ----------------------------------------------------------
 
 #Funzione Indicatrice
 
@@ -141,7 +120,7 @@ abs_stirling_number_1st <- function(r,k1){
   
   if(r == 0 & k1 == 0){abs_str_num <- 1}
   
-  abs_str_num
+  return(abs_str_num)
   
 }
 
@@ -164,7 +143,7 @@ VI <- function(c1, c2){
 
 
 
-# FUNZIONI PRIOR SUI PARAMETRI --------------------------------------------
+# PRIOR FUNCTIONS ON THE PARAMETERS --------------------------------------------
 
 
 
@@ -175,18 +154,12 @@ full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
   
   ##--##
   
-  #d = ncol(as.data.frame(gamma_k[j]))
   d     =  nbasis = 3
-  phi_0 <- phi_0
+  phi_0 = phi_0
   nu_0  =  nu_0 
-  m_0   <- m_0
+  m_0   = m_0
   k_0   =  k_0
-  #diag(phi_0) <- c(22,100,55,30)  # !! modificare prima della simulazione !! -> guardare coeff_table_dati_1
-  #diag(phi_0) <- c(1,0.003,0.001,0.001)  # caso 1
-  #diag(phi_0) <- c(0.01,0.1,0.04,0.03)   # caso 2
-  #diag(phi_0) <- c(1.20,0.10,0.05,0.02)   # caso 3
-  #diag(phi_0) <- c(1.00,0.20)  # dati covid
-  
+
   ##--##  
   
   vec_num <- as.numeric()
@@ -240,13 +213,10 @@ full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
 
 full_conditional_sigma <- function(sigma,theta,k,rho_n,a,b,c,d){
   
-  
   vec_prod_1 <- as.numeric(0)
   
   for(i in 1:(k-1)){
-    
     vec_prod_1[i] = log(theta + i*sigma)
-    
   }
   
   produttoria_1 <- sum(vec_prod_1)
@@ -254,18 +224,14 @@ full_conditional_sigma <- function(sigma,theta,k,rho_n,a,b,c,d){
   vec_prod_2 <- as.numeric(0)
   
   for(i in 1:k){
-    
     vec_prod_2[i] = log_pochhammer((1-sigma),(rho_n[i]-1))
-    
   }
   
   produttoria_2 <- sum(vec_prod_2)
   
-  
   res <- (a-1) * log(sigma) + (b-1) * log(1-sigma) + (c-1)*log(theta + sigma) + log(exp(-d*sigma)) + produttoria_1 + produttoria_2
   
   return(res)
-  
 }
 
 
@@ -289,12 +255,9 @@ full_conditional_theta <- function(prior_c,prior_d,candidato,k){
     
     omega_j <- omega_j_NUM/omega_j_DEN
     
-    #gamma_j <- r_shifted_gamma(prior_c+x, prior_d + f -log(z), sigma)
-    
-    vecc[x+1] <- omega_j#*gamma_j
+    vecc[x+1] <- omega_j
     
   }
-  
   
   vecc = vecc/sum(vecc)
   
@@ -305,9 +268,5 @@ full_conditional_theta <- function(prior_c,prior_d,candidato,k){
   theta_j <- r_shifted_gamma(prior_c+ (component-1), prior_d + f -log(z), sigma)
   
   return(theta_j)
-  
-  #thetino <- sum(gamma_j)
-  
-  #thetino
   
 }
