@@ -1,6 +1,6 @@
-#POCHAMMER: funzione per il rising factorial
+# POCHAMMER
 
-log_pochhammer <- function(x,n){
+log_pochhammer <- function(x,n){   
   
   num_vec <- as.numeric()
   num_vec[1] = x
@@ -37,7 +37,7 @@ pochammer <- function(x,n){
   
 } 
 
-#PRODUTTORIE: in seguito le produttorie presenti nella prior
+# 
 
 prod_1_prior <- function(k,theta,sigma){   
   
@@ -87,7 +87,7 @@ lgamma_d_a <- function(d,a){
   return(ret)
 }
 
-#MATRICE S 
+# S MATRIX 
 
 theta_matrix <- function(j,theta,rho_n){
   
@@ -113,7 +113,7 @@ theta_matrix <- function(j,theta,rho_n){
   return(matrix)
 }
 
-# PRIOR SULLE PARTIZIONI --------------------------------------------------
+# PRIOR ON THE PARTITIONS --------------------------------------------------
 
 prior <- function(n,k,theta,sigma,rho_n){
   
