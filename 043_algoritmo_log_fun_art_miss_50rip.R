@@ -1,4 +1,8 @@
-## LIBRARIES 
+#
+rm(list = ls())
+#
+
+# LIBRARIES  --------
 
 library("Rcpp")
 library("RcppArmadillo")
@@ -10,8 +14,6 @@ library("MASS")
 library("FAdist")
 library("combinat")
 library("mvtnorm")
-
-setwd("C:\\Users\\danes\\Desktop\\Tesi\\Codice\\Codici_articolo")
 
 # SEED --------
 
@@ -25,8 +27,8 @@ list_of_sigma <- list()
 list_of_theta <- list()
 VI_vec <- as.numeric()
 
-for(sim in 1:50){
-
+for(sim in 1:1){
+  
 # DATA SIMULATION --------
 
 gamma_sim_1 = 0.5
@@ -113,7 +115,7 @@ frequenze = rep(0, n) #vettore frequenze punti di cambio
 
 ## IMPORT FUNZIONI C++
 
-
+sourceCpp("wade.cpp")
 sourceCpp("cpp_funz.cpp")
 
 ##
@@ -143,6 +145,11 @@ miss_index = c()
 z_missing = rep(0,n)
 z_missing[miss_index] = 1
 
+# SOURCE --------
+
+source("01_funzioni_log_fun_art_miss.R")
+source("02_verosomiglianza_log_fun_art_miss.R")
+source("03_alpha_log_fun_art_miss.R")
 
 # MCMC ALGORITHM --------
 
@@ -409,11 +416,9 @@ for(step in 1:Nsim){
 # VI LOSS --------
 
 partitions_no_burn_in <- partitions[(1*10^3 + 1):length(partitions)] #remove burn-in period
-#partitions_no_burn_in <- partitions
+#partitions_no_burn_in <- partitions 
 
-sourceCpp("wade.cpp") # SPOSTARE IL FILE NELLA STESSA CARTELLA DEL CODICE
-
-X <- matrix(data = NA, nrow = 100000, ncol = 300)
+X <- matrix(data = NA, nrow = length(partitions) - 1*10^3, ncol = 300)
 
 for (i in 1:length(partitions_no_burn_in)){
   for (j in 1:length(partitions_no_burn_in[[i]])){
