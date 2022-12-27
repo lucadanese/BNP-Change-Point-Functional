@@ -151,7 +151,6 @@ VI <- function(c1, c2){
 
 full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
   
-  
   ##--##
   
   d     =  nbasis = 3
@@ -170,7 +169,6 @@ full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
     
   }
   
-
   
   num <- lfactorial(n) + (k*d/2)*log(k_0) + (k*nu_0/2) * log(det(phi_0)) + sum(log(vec_num))
   
@@ -206,10 +204,16 @@ full_conditional_gamma <- function(n, k, rho_n, sigma, theta, gamma, gamma_k){
 }
 
 
-
-
-
 # SIGMA
+
+# for further details -> Section 4 Martinez & Mena (2014)
+# sigma: value of sigma to be updated
+# theta: value of theta
+# k: number of groups
+# rho_n: current partition
+# a,b: parameters for the Beta prior of sigma
+# c,d: see THETA
+
 
 full_conditional_sigma <- function(sigma,theta,k,rho_n,a,b,c,d){
   
@@ -239,13 +243,19 @@ full_conditional_sigma <- function(sigma,theta,k,rho_n,a,b,c,d){
 
 # THETA 
 
-full_conditional_theta <- function(prior_c,prior_d,candidato,k){
+# for further details -> Proposition 1 Martinez & Mena (2014)
+#
+# prior_c, prior_d: parameters of the shifted gamma 
+# candidate: proposed value for theta
+# k: number of groups 
+
+full_conditional_theta <- function(prior_c,prior_d,candidate,k){
   
   vecc <- as.numeric()
   
-  z <- rbeta(1,candidato + 2, n)
+  z <- rbeta(1,candidate + 2, n)
   
-  f <- rexp(1,candidato + 1)
+  f <- rexp(1,candidate + 1)
   
   for(x in 0:(k+1)){
     
